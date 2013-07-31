@@ -13,3 +13,5 @@ and import the included sql file.
 The interface and data fields are very rudimentary.  I just wanted to get a basic backbone application
 working.  This is merely a base from which to build a more thorough project management system.  Although even
 in its current state it has proven useful in keeping track of my various client projects.
+
+Demo: http://gregscharf.com/pmgr_demo/
