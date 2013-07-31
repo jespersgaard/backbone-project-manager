@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+            <meta charset="UTF-8">
+            <link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap.css">            
+            <link type="text/css" rel="stylesheet" href="bootstrap/css/bootstrap-responsive.css">            
+            <link type="text/css" rel="stylesheet" href="css/styles.css">            
+            <!--<link type="text/css" rel="stylesheet" href="css/vendor/normalize.css">-->
+            <link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+            
+            <title>Project Manager</title>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+            <script src="js/libs/underscore.js"></script>
+            <script src="js/libs/backbone.js"></script>            
+            <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+            
+            <script>
+                $(document).ready(function(){
+                    $("#tabs").tabs();
+                });
+            </script>
+
+    </head>
+
+    <body>
+        
+    <div class="navbar navbar-inverse">  
+    <div class="navbar-inner">
+        <div class='container'>
+            <ul class="nav pull-left">
+                <li class='brand'>Project Manager</li>
+                <li id='login_dd' class="dropdown">
+                    <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
+
+                    <div id='login' class="dropdown-menu" style="padding: 15px 15px 0px 15px;">
+                        <script type="text/template" id="login-template">
+                        <form id='login_form' accept-charset="UTF-8">
+                          <input id="username" style="margin-bottom: 15px;" type="text" name="username" value="<%- username %>" placeholder="username" size="30" />
+                          <input id="user_password" style="margin-bottom: 15px;" type="password" name="password" size="30" value="<%- password %>" placeholder="password" />
+                          <input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" />
+                          <label class="string optional" for="user_remember_me"> Remember me</label>
+                          <input id="login_button" class="btn btn-primary inline span1" type="submit" value="Sign In" />
+                          <input id="cancel_login_button" class="btn btn-primary inline span1" value="Cancel" />
+                          </form>                    
+                        </script>
+
+                        <script type="text/template" id="loggedin-user-template">
+                            logged in as <%- username %>
+                        </script>
+                    </div>
+                </li>
+           </ul>
+                <div id="project_select">
+                    <script type="text/template" id="project-list-template">
+                    <ul class='nav inline pull-right'>
+                        <!--<li>
+                        <div class='badge-info'>projects:</div>
+                        </li>-->
+                        <li>
+                        <select id="project_names" name="project_names">
+                            <option value="" disabled selected>Select a project</option>
+                            <option disabled>--------------</option>
+                        </select>
+                        </li>
+
+                        <li class="dropdown">
+                        <a id='new_project' class="dropdown-toggle" href="#" data-toggle="dropdown" title="New Project" style="padding: 0px;"><span class="font_icon">+</span></a>                
+                            <div id="create_project_dialog" class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;"> 
+                                <form id='create_project' accept-charset="UTF-8">
+                                  <input id="project_name" style="margin-bottom: 15px;" type="text" name="projectname" placeholder="enter name of new project" size="30" />
+
+                                  <input id="create_project_button" class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px;" type="submit" value="create" />
+                                </form>                                 
+                            </div>
+                        </li>                    
+                     </ul>
+                    </script>
+                <script type="text/template" id="project-item-template">
+                    <option value=<%- project_id %>> <%- project_name %> </option>
+                </script>  
+            </div>     <!--have to comment out project_select end div to get header to not appear behind navbar ??????-->
+        </div> <!--container-->
+    </div>  <!-- navbar inner-->
+    </div>  <!-- navbar -->
+
+    <!--<div class='container'>
+        <h3 class='muted'>Project Manager</h3>
+    </div>-->
+    
+    <div class='container ' id='main'>
+
+    <div class="btn-group">
+    <!--<button class="btn btn-default" type="button">1</button>
+    <button class="btn btn-default" type="button">2</button>
+    <button class="btn btn-default" type="button">3</button>-->
+        <div id='editor_nav' class="dropdown btn-group">
+
+                <script type="text/template" id="entry-editor-button">
+                <button id='open_editor_button' class="btn btn-default dropdown-toggle" title='' data-placement="top" data-toggle="dropdown" type="button" data-original-title='New Entry'>
+                    <span class="font_icon">V</span>  
+                </button>
+                <div id='entry_editor' class="dropdown-menu">
+                </div>
+                </script>
+
+                <script type="text/template" id="log-editor-template">
+                <form id='new_entry_form' accept-charset="UTF-8">
+                    <fieldset>
+                      <legend>New Log</legend>
+                        <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input class="log_date" name="date" type="text" value="<%- date %>" disabled />
+                        </div>
+                        <div class="form-group">
+                        <label for="text_area">Entry:</label>
+                        <textarea class="log_entry" name="text_area" rows="5" cols="80" draggable="false"></textarea><br>
+                        </div>
+                        <div class="form-group span4">
+                            <input id="save_entry_button" class="btn btn-default" type="submit" value="Save" />
+                            <input id="cancel_entry_button" class="btn btn-default" type="cancel" value="Cancel" />
+                        </div>
+                    </fieldset>
+                </form>                    
+                </script>
+
+
+            <script type="text/template" id="bug-editor-template">
+
+                <form id='new_entry_form' accept-charset="UTF-8">
+                    <fieldset>
+                      <legend>New Bug</legend>
+                        <div class="form-group">
+                            <label for="date">Date:</label>
+                            <input class="bug_date" name="date" type="text" value="<%- date_opened %>" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label for="text_area">Bug:</label>
+                            <textarea class="bug_entry" name="text_area" rows="5" cols="80" draggable="false"></textarea><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="text_area">Notes:</label>
+                            <textarea class="notes" name="text_area" rows="5" cols="80" draggable="false"></textarea><br>
+                        </div>
+                        <div class="form-group span4">
+                            <input id="save_entry_button" class="btn btn-default" type="submit" value="Save" />
+                            <input id="cancel_entry_button" class="btn btn-default" type="cancel" value="Cancel" />
+                        </div>
+                    </fieldset>
+                </form>                    
+                </script>            
+
+            <script type="text/template" id="spec-editor-template">
+                <form id='new_entry_form' accept-charset="UTF-8">
+                    <fieldset>
+                      <legend>New Spec</legend>
+                        <div class="form-group">
+                            <label for="text_area">Spec:</label>
+                            <textarea class="spec_entry" name="text_area" rows="5" cols="80" draggable="false"></textarea><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="text_area">Notes:</label>
+                            <textarea class="notes" name="text_area" rows="5" cols="80" draggable="false"></textarea><br>
+                        </div>
+                        <div class="form-group span4">
+                            <input id="save_entry_button" class="btn btn-default" type="submit" value="Save" />
+                            <input id="cancel_entry_button" class="btn btn-default" type="cancel" value="Cancel" />
+                        </div>
+                    </fieldset>
+                </form>                    
+                </script>    
+          </div>
+        </div>
+
+        <div id="tabs">
+          <ul>
+            <li><a href="#tabs-log">Log</a></li>
+            <li><a href="#tabs-bugs">Bugs</a></li>
+            <li><a href="#tabs-specs">Specs</a></li>
+          </ul>
+
+            <div class="tab_page">
+                <div id="tabs-log">
+
+                <script type="text/template" id="log-group-template">
+                    <article> 
+                        <header> <%- date %> </header>
+                        <ul id='<%- date %>'>  </ul>
+                    </article> 
+                </script>                        
+
+                <script type="text/template" id="log-template">
+                    <li class='editable'> 
+                        <%- entry_text %>
+                    </li>
+                </script>    
+
+                <script type="text/template" id="log-edit-template">
+                    <textarea class='edit_entry' name='text_area' rows='3' cols='55' draggable='false'><%- entry_text %></textarea>
+                </script>    
+
+                </div>
+
+                <div id="tabs-bugs">
+                    <script type="text/template" id="bug-group-template">
+                        <table>
+                            <caption>Open</caption>
+                            <thead>
+                            <tr id='openrowhead'>
+                                <th>Bug</th>
+                                <th>Notes</th>
+                                <th>Date Opened</th>
+                                <th>Status</th>                               
+                            </tr>
+                            </thead>
+                            <tbody id="open">
+
+                            </tbody>
+                        </table>
+                        <table>
+                            <caption>Closed</caption>
+                            <thead>
+                            <tr id='closedrowhead'>
+                                <th>Bug</th>
+                                <th>Notes</th>
+                                <th>Date Closed</th>
+                                <th>Status</th>                               
+                            </tr>
+                            </thead>
+                            <tbody id="closed">
+
+                            </tbody>
+                        </table>
+                    </script>
+
+                    <script type="text/template" id="bug-template">
+                        <td id='bug' class='editable'><%- entry %></td>
+                        <td id='note' class='editable'><%- notes %></td>
+                        <td id='date_opened'><%- date_opened %></td>
+                        <td id='date_closed'><%- date_closed %></td>
+                        <% if (open == '1') { %>
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Open</span></td>
+                        <% } else { %>                
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Open" /><span class='text'>Closed</span></td>
+                        <% } %>                
+                    </script>
+                    <script type="text/template" id="bug-edit-template">
+                        <td>
+                        <textarea id='bug' class='edit_entry' name='text_area' rows='3' cols='55' draggable='false'><%- entry %></textarea>
+                        </td>
+                        <td id='note' class='editable'><%- notes %></td>
+                        <td id='date_opened'><%- date_opened %></td>
+                        <td id='date_closed'><%- date_closed %></td>
+                        <% if (open == '1') { %>
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Open</span></td>
+                        <% } else { %>                
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Open" /><span class='text'>Closed</span></td>
+                        <% } %>                
+                    </script>    
+                    <script type="text/template" id="note-edit-template">
+                        <td id='bug' class='editable'><%- entry %></td>
+                        <td>
+                        <textarea id='note' class='edit_entry' name='text_area' rows='3' cols='55' draggable='false'><%- notes %></textarea>
+                        </td>
+                        <td id='date_opened'><%- date_opened %></td>
+                        <td id='date_closed'><%- date_closed %></td>
+                        <% if (open == '1') { %>
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Open</span></td>
+                        <% } else { %>                
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Open" /><span class='text'>Closed</span></td>
+                        <% } %>                
+                    </script>    
+
+                </div>
+
+                <div id="tabs-specs">
+                    <script type="text/template" id="spec-group-template">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Spec</th>
+                                <th>Notes</th>
+                                <th>Status</th>                               
+                            </tr>
+                            </thead>
+                            <tbody id="spec-list">
+
+                            </tbody>
+                        </table>
+                    </script>
+                    <script type="text/template" id="spec-template">
+                        <td id='spec' class='editable'><%- spec %></td>
+                        <td id='note' class='editable'><%- notes %></td>
+                        <% if (open == '1') { %>
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Open</span></td>
+                        <% } else { %>                
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Completed</span></td>
+                        <% } %>                  
+                    </script>
+                    <script type="text/template" id="spec-edit-template">
+                        <td>
+                        <textarea id='spec' class='edit_entry' name='text_area' rows='3' cols='55' draggable='false'><%- spec %></textarea>
+                        </td>
+                        <td id='note' class='editable'><%- notes %></td>
+
+                        <% if (open == '1') { %>
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Open</span></td>
+                        <% } else { %>                
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Completed</span></td>
+                        <% } %>                  
+                    </script>    
+                    <script type="text/template" id="specnote-edit-template">
+                        <td id='spec' class='editable'><%- spec %></td>
+                        <td>
+                        <textarea id='note' class='edit_entry' name='text_area' rows='3' cols='55' draggable='false'><%- notes %></textarea>
+                        </td>
+                        <% if (open == '1') { %>
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Open</span></td>
+                        <% } else { %>                
+                            <td id='open' class='editable_toggle'><input class="btn btn-default toggle_button" value="Close" /><span class='text'>Completed</span></td>
+                        <% } %>                  
+                    </script>                          
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+  <script src="bootstrap/js/bootstrap.min.js"></script>        
+  <script src="js/views/project_manager_view.js"></script>        
+  <script src="js/models/project_model.js"></script>        
+  <script src="js/models/user_model.js"></script>        
+  <script src="js/routers/router.js"></script>        
+  <script src="js/views/log.js"></script>        
+  <script src="js/views/bug.js"></script>        
+  <script src="js/views/spec.js"></script>        
+  <script src="js/views/projectlist.js"></script>        
+  <script src="js/views/login.js"></script>        
+  <script src="js/views/entry_editor.js"></script>
+  <script src="js/project_manager.js"></script>        
+    
+  </body>
+</html>
