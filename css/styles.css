@@ -1,0 +1,184 @@
+
+@import url(http://fonts.googleapis.com/css?family=Arimo);
+
+@font-face {
+	font-family: "Arimo";
+	src: url(http://fonts.googleapis.com/css?family=Arimo);
+}
+
+@font-face {
+    src:url("../images/modernpics.otf");
+    font-family: "Modernpics";
+/*  unicodeRange: U+0041-U+007F*/
+}
+
+body {
+        background: #eaeaea url('../images/bg.png');
+	font-family: "Gill Sans", Arimo, sans-serif;
+}
+
+/* -----------------------------
+
+    Entry Form
+
+-------------------------------- */
+
+form#new_entry_form {
+    padding: 15px;
+}
+form#new_entry_form textarea{
+    width: 500px;
+}
+
+/* -----------------------------
+
+    icons and buttons
+
+-------------------------------- */
+span.font_icon{
+    font-family: "Modernpics";
+    font-size: 18px;
+    cursor: pointer;
+    
+}
+
+#login_link span.font_icon {
+    padding-left: 5px;
+    font-size: 16px;
+    border: none;
+}
+
+span#logged_in {
+    color: white;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+#new_project span.font_icon {
+    text-decoration: none;
+}
+
+
+/* -----------------------------
+
+    Log/Bug/Spec Display
+
+-------------------------------- */
+
+#main {
+    display: none;
+}
+
+#tabs {
+    /*override the 1.1em setting in ui-widget*/
+    font-size: 1em; 
+}
+
+article header{
+    
+        background: url("../images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 50% 50% #CCCCCC;
+        color: #222222;    
+	text-align: left;
+        font-size: 1.15em;
+        background-color: gray;
+        border: solid 1px black;
+        border-bottom-width: 1px;
+        border-bottom-style: dotted;
+        padding: 3px;
+        /*margin: auto;*/
+}
+
+article li {
+	line-height: 1.2em;
+        padding-bottom: 5px;
+        color: black;
+}
+
+/* log display and entry */
+.editable:hover {
+    cursor: pointer;
+    box-shadow: 5px 5px 5px #888888;
+}
+
+.toggle_button {
+    display: none;
+}
+
+#tab-specs .toggle_button {
+    width: 65px;
+}
+
+#tab-bugs .toggle_button {
+    width: 45px;
+}
+
+.edit_entry {
+    width: 100%;
+}
+
+/*table style for the bugs page*/
+table {
+    /*display: none;*/
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+        border: solid 1px black;
+        padding: 5px;
+}
+
+td#open {
+    width: 15%
+}
+
+td#note {
+    width: 40%
+}
+td#spec,
+td#bug {
+    width: 42%
+    
+}
+
+table caption {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/*#tabs-bugs tr:nth-child(even) {
+    background-color: lightsteelblue;
+    
+}*/
+
+tbody#closed #date_opened {
+    display: none;
+}
+
+tbody#open #date_closed {
+    display: none;
+}
+
+thead {
+    text-align: center;
+    border: solid 1px black;
+}
+
+/*textarea{
+    background-color:transparent;
+    border: 0px solid;
+}*/
+
+a {
+    text-decoration: none;
+}
+
+a:link,
+a:visited {
+	color: #A3C1F9;
+}
+
+a:hover {
+	/*background: #f88396;*/
+	color: #508BF7;
+}
